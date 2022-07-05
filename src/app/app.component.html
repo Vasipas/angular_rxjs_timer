@@ -1,6 +1,8 @@
-<h2>{{formatedTime().minutes}}:{{formatedTime().seconds}}</h2>
-<div>
-    <button (click)="start()">{{startButtonLabel()}}</button>
-    <button (click)="wait()">Wait</button>
-    <button (click)="reset()">Reset</button>
+<div id="wrapper">
+    <h2>{{formatedTime().minutes}}:{{formatedTime().seconds}}</h2>
+    <div id="buttons">
+    <button id="start">{{startButtonLabel()}}</button>
+    <button id="wait">Wait</button>
+    <button id="reset">Reset</button>
+    </div>
 </div>

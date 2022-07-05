@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ElementRef } from '@angular/core';
 import { Subject, interval } from 'rxjs';
 import { buffer, map, debounceTime, filter, takeUntil } from 'rxjs/operators';
 
@@ -10,12 +10,15 @@ import { buffer, map, debounceTime, filter, takeUntil } from 'rxjs/operators';
 
 export class AppComponent implements OnDestroy {
 
+  constructor(private elementRef:ElementRef) {}
+
   click$ = new Subject();
   start$ = new Subject();
   destroy$ = new Subject();
-  seconds = 0
-  inWaiting = false
-  started = false
+
+  seconds:number = 0
+  inWaiting:boolean = false
+  started:boolean = false
 
   doubleClick$ = this.click$.pipe(
     buffer(
@@ -43,6 +46,7 @@ export class AppComponent implements OnDestroy {
         });
       } else {
         this.inWaiting = false
+        this.started = true
         let timeOffset = this.seconds
         this.timer$.pipe(map(data => data+timeOffset)).subscribe(data => {
           this.seconds = data
@@ -52,7 +56,7 @@ export class AppComponent implements OnDestroy {
       this.started = false
       this.seconds = 0
       this.destroy$.next(true)
-    }   
+    } 
   }
 
   wait = () => {
@@ -77,9 +81,15 @@ export class AppComponent implements OnDestroy {
       seconds: seconds.toString().padStart(2, '0')}
   }
 
-  startButtonLabel = () => {
+  startButtonLabel = ():string => {
     if(this.started) return 'Stop'
     else return 'Start'
+  }
+
+  ngAfterViewInit() {
+    this.elementRef.nativeElement.querySelector('#start').addEventListener('click', this.start);
+    this.elementRef.nativeElement.querySelector('#wait').addEventListener('click', this.wait);
+    this.elementRef.nativeElement.querySelector('#reset').addEventListener('click', this.reset);
   }
 
   ngOnDestroy = () => {
